@@ -8,7 +8,7 @@
     <!-- GOOGLE FONTS IMPORT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Cinzel:wght@400;700&family=Courier+Prime&family=Inter:wght@400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Michroma&family=Montserrat:wght@400;700&family=Nosifer&family=Nunito:wght@400;700&family=Orbitron:wght@400;700&family=Permanent+Marker&family=Quicksand:wght@400;700&family=Spectral:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Cinzel:wght@400;700&family=Courier+Prime&family=Inter:wght@400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Michroma&family=Montserrat:wght@400;700&family=Nosifer&family=Nunito:wght@400;700&family=Orbitron:wght@400;700&family=Oswald&family=Permanent+Marker&family=Quicksand:wght@400;700&family=Spectral:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 
     <style>
         /* --- SHARED TOKENS --- */
@@ -279,6 +279,44 @@
         .controls-hidden .aesthetic-controls { display: none; }
         select.hud-btn { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: transparent; border: 1px solid transparent; text-align: center; font-family: inherit; }
         select.hud-btn option { background-color: var(--bg-card); color: var(--text-primary); text-align: left; }
+
+        /* --- NEW UI ELEMENTS --- */
+        #watermark {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            opacity: 0.2;
+            color: var(--text-primary);
+            pointer-events: none;
+            z-index: 1500;
+        }
+
+        #zoom-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 5000;
+            transition: color 0.3s ease;
+        }
+
+        /* Helper for Title Screen Fade */
+        .faded-out {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
     </style>
 </head>
 <body class="theme-default">
@@ -477,6 +515,12 @@
             </select>
         </div>
     </div>
+
+    <!-- WATERMARK -->
+    <div id="watermark">SalamancaTech</div>
+
+    <!-- ZOOM INDICATOR -->
+    <div id="zoom-indicator">100%</div>
 
     <script>
         function generateAbstractSVG(seed) {
@@ -728,10 +772,34 @@
             if (state.mode === 'cycling') selectStyle(themesList[cycleIndex]);
         }
 
+        function dismissTitleScreen() {
+            // If user has actively chosen to cycle/preview, don't auto-dismiss
+            if (state.mode === 'cycling') return;
+
+            const cloudLayer = document.getElementById('cloud-layer');
+            const scrollHint = document.getElementById('scroll-hint');
+
+            if(cloudLayer) cloudLayer.classList.add('faded-out');
+            if(scrollHint) scrollHint.classList.add('faded-out');
+
+            // Allow transition to start, then unlock if needed
+            setTimeout(() => {
+                if(state.mode === 'locked') {
+                    selectStyle('default');
+                }
+            }, 500);
+        }
+
         function selectStyle(theme) {
             state.mode = 'unlocked'; state.currentTheme = theme;
             document.body.className = 'unlocked';
             
+            // Ensure title screen is faded out if manual selection happens
+            const cloudLayer = document.getElementById('cloud-layer');
+            const scrollHint = document.getElementById('scroll-hint');
+            if(cloudLayer) cloudLayer.classList.add('faded-out');
+            if(scrollHint) scrollHint.classList.add('faded-out');
+
             if (theme !== 'default') {
                 document.body.classList.add(`theme-${theme}`);
             } else {
@@ -741,7 +809,10 @@
             isLensActive = false;
             document.getElementById('latent-layer').classList.remove('active');
             document.getElementById('cloud-layer').classList.remove('clickable');
-            document.getElementById('scroll-hint').innerHTML = "SCROLL TO DESCEND<br><span style='font-size:0.7em; opacity:0.7'>CTRL+SCROLL TO SHIFT VIBE</span>";
+            // Hint is faded out now, but we update text anyway in case it comes back or for accessibility?
+            // Actually it's faded out.
+            if(scrollHint) scrollHint.innerHTML = "SCROLL TO DESCEND";
+
             updateHud(theme);
         }
 
@@ -834,14 +905,9 @@
                 }
                 document.querySelectorAll('.room-detail').forEach(room => room.style.opacity = state.zoom > 12 ? 1 : 0);
 
-                let cloudOpacity = 1;
-                if (state.mode === 'unlocked') cloudOpacity = Math.max(0, Math.min(1, 1.5 - state.zoom));
-                const cloudLayer = document.getElementById('cloud-layer');
-                if (cloudLayer) {
-                    cloudLayer.style.opacity = cloudOpacity;
-                    if(state.mode === 'cycling') cloudLayer.style.pointerEvents = 'auto';
-                    else cloudLayer.style.pointerEvents = cloudOpacity < 0.1 ? 'none' : 'auto';
-                }
+                // Update Zoom Indicator
+                const zoomInd = document.getElementById('zoom-indicator');
+                if(zoomInd) zoomInd.innerText = Math.round(state.zoom * 100) + '%';
             }
             requestAnimationFrame(animate);
         }
@@ -887,13 +953,16 @@
             initZUI();
             
             state.isZoomLocked = true;
-            state.interactionMode = 'locked';
+            // state.interactionMode = 'locked'; // Removed as per new requirement
             
             const hint = document.getElementById('scroll-hint');
             if(hint) hint.innerHTML = "SELECT A STYLE TO ENTER";
             
             updateHud('default');
             
+            // Auto-dismiss title screen after 3 seconds
+            setTimeout(dismissTitleScreen, 3000);
+
             animate();
             requestAnimationFrame(animateBlob);
         });
