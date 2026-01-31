@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latent Space Club</title>
+    
+    <!-- GOOGLE FONTS IMPORT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Cinzel:wght@400;700&family=Courier+Prime&family=Inter:wght@400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Michroma&family=Montserrat:wght@400;700&family=Nosifer&family=Nunito:wght@400;700&family=Orbitron:wght@400;700&family=Permanent+Marker&family=Quicksand:wght@400;700&family=Spectral:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- SHARED TOKENS --- */
+        :root {
+            --bg-core: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --border: #334155;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            
+            /* Category Colors */
+            --c-info: #f97316;      /* Orange */
+            --c-resources: #3b82f6; /* Blue */
+            --c-forums: #15803d;    /* Dark Green */
+            --c-events: #86efac;    /* Light Green */
+            --c-arts: #a855f7;      /* Purple */
+            --c-nsfw: #94a3b8;      /* Grey */
+            --c-club: #ef4444;      /* Red */
+        }
+
+        /* --- GLOBAL RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { width: 100vw; height: 100vh; overflow: hidden; background: var(--bg-core); color: var(--text-primary); font-family: var(--font-main); transition: background-color 0.5s ease, color 0.5s ease; }
+
+        /* --- THEME DEFINITIONS --- */
+        body.theme-cozy { --bg-core: #2c2520; --bg-card: #3e3630; --text-primary: #e6e1db; --text-secondary: #d2a679; --accent: #d97757; --border: #5c4d44; --font-main: 'Lora', serif; }
+        body.theme-futuristic { --bg-core: #030712; --bg-card: #111827; --text-primary: #00ff41; --text-secondary: #008f11; --accent: #00ff41; --border: #003b00; --font-main: 'Michroma', sans-serif; }
+        body.theme-city { --bg-core: #18181b; --bg-card: #27272a; --text-primary: #f4f4f5; --text-secondary: #a1a1aa; --accent: #f59e0b; --border: #3f3f46; --font-main: 'Montserrat', sans-serif; }
+        body.theme-candy { --bg-core: #1f1016; --bg-card: #381a26; --text-primary: #fbcfe8; --text-secondary: #f472b6; --accent: #db2777; --border: #831843; --font-main: 'Quicksand', sans-serif; }
+        body.theme-nightmare { --bg-core: #000000; --bg-card: #1a0505; --text-primary: #ef4444; --text-secondary: #7f1d1d; --accent: #b91c1c; --border: #450a0a; --font-main: 'Nosifer', cursive; }
+        body.theme-forest-light { --bg-core: #ecfdf5; --bg-card: #d1fae5; --text-primary: #064e3b; --text-secondary: #047857; --accent: #10b981; --border: #6ee7b7; --font-main: 'Nunito', sans-serif; }
+        body.theme-forest-dark { --bg-core: #022c22; --bg-card: #064e3b; --text-primary: #ecfdf5; --text-secondary: #a7f3d0; --accent: #d97706; --border: #065f46; --font-main: 'Spectral', serif; }
+        body.theme-icy-cave { --bg-core: #1e1b4b; --bg-card: #312e81; --text-primary: #c7d2fe; --text-secondary: #818cf8; --accent: #67e8f9; --border: #4338ca; --font-main: 'Cinzel', serif; }
+        body.theme-icy-moon { --bg-core: #f8fafc; --bg-card: #e2e8f0; --text-primary: #0f172a; --text-secondary: #475569; --accent: #3b82f6; --border: #cbd5e1; --font-main: 'Audiowide', sans-serif; }
+        body.theme-desert-planet { --bg-core: #451a03; --bg-card: #78350f; --text-primary: #fef3c7; --text-secondary: #fbbf24; --accent: #f59e0b; --border: #92400e; --font-main: 'Orbitron', sans-serif; }
+        body.theme-desert-island { --bg-core: #134e4a; --bg-card: #115e59; --text-primary: #ccfbf1; --text-secondary: #5eead4; --accent: #fde047; --border: #2dd4bf; --font-main: 'Permanent Marker', cursive; }
+        body.theme-digital-realm { --bg-core: #000000; --bg-card: #001100; --text-primary: #00ff00; --text-secondary: #008f00; --accent: #00ff00; --border: #003300; --font-main: 'VT323', monospace; }
+
+        /* Preview Theme Overrides */
+        .latent-layer.theme-cozy { --bg-core: #2c2520; --bg-card: #3e3630; --text-primary: #e6e1db; --accent: #d97757; }
+        .latent-layer.theme-futuristic { --bg-core: #030712; --bg-card: #111827; --text-primary: #00ff41; --accent: #00ff41; }
+        .latent-layer.theme-city { --bg-core: #18181b; --bg-card: #27272a; --text-primary: #f4f4f5; --accent: #f59e0b; }
+        .latent-layer.theme-candy { --bg-core: #1f1016; --bg-card: #381a26; --text-primary: #fbcfe8; --accent: #db2777; }
+        .latent-layer.theme-nightmare { --bg-core: #000000; --bg-card: #1a0505; --text-primary: #ef4444; --accent: #b91c1c; }
+        .latent-layer.theme-forest-light { --bg-core: #ecfdf5; --bg-card: #d1fae5; --text-primary: #064e3b; --accent: #10b981; }
+        .latent-layer.theme-forest-dark { --bg-core: #022c22; --bg-card: #064e3b; --text-primary: #ecfdf5; --accent: #d97706; }
+        .latent-layer.theme-icy-cave { --bg-core: #1e1b4b; --bg-card: #312e81; --text-primary: #c7d2fe; --accent: #67e8f9; }
+        .latent-layer.theme-icy-moon { --bg-core: #f8fafc; --bg-card: #e2e8f0; --text-primary: #0f172a; --accent: #3b82f6; }
+        .latent-layer.theme-desert-planet { --bg-core: #451a03; --bg-card: #78350f; --text-primary: #fef3c7; --accent: #f59e0b; }
+        .latent-layer.theme-desert-island { --bg-core: #134e4a; --bg-card: #115e59; --text-primary: #ccfbf1; --accent: #fde047; }
+        .latent-layer.theme-digital-realm { --bg-core: #000000; --bg-card: #001100; --text-primary: #00ff00; --accent: #00ff00; }
+
+        /* --- UTILITIES --- */
+        .hidden { display: none !important; }
+        .view-root { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow: hidden; }
+
+        /* =========================================
+           MODE 1: ZUI (SPATIAL) STYLES
+           ========================================= */
+        #zui-root { background-color: var(--bg-core); transition: background-color 0.5s ease; }
+        
+        .world-container { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; will-change: transform; }
+        
+        #cloud-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; pointer-events: none; transition: opacity 0.5s ease; }
+        #cloud-layer.clickable { pointer-events: auto; cursor: pointer; }
+        .cloud-content { text-align: center; padding: 2rem; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: opacity 0.5s ease, transform 0.5s ease; }
+        
+        body.unlocked #cloud-layer .cloud-content { opacity: 0 !important; transform: scale(0.9); pointer-events: none; }
+        
+        .cloud-content h1 { font-size: 4rem; margin-bottom: 1rem; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .scroll-hint { position: fixed; bottom: 8rem; left: 50%; transform: translateX(-50%); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.05em; color: var(--accent); text-transform: uppercase; z-index: 1001; opacity: 1; transition: opacity 0.3s ease; pointer-events: none; }
+
+        /* Island Map */
+        .island-map { 
+            position: absolute; width: 3000px; height: 2200px; 
+            background-color: transparent; border: none; box-shadow: none; 
+            transform: translate(-50%, -50%); 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        /* FIX: Use object-fit: fill to ensure exact pixel matching to container dimensions */
+        .island-map img { width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
+
+        /* Regions */
+        .region-node { 
+            position: absolute; 
+            background: var(--bg-core); 
+            border: 2px solid var(--border); 
+            border-radius: 16px; padding: 2rem; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+            min-width: 300px; 
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            cursor: grab; /* Indicates draggable */
+        }
+        .region-node:active { cursor: grabbing; }
+
+        .region-node h3 { margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .region-node .region-bg { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.2; z-index:-1; border-radius:14px; object-fit:cover; pointer-events:none; }
+        
+        /* CATEGORY: INFO (Orange) - TOP CENTER */
+        #region-information { top: -650px; left: 0px; transform: translateX(-50%); width: 600px; border-color: var(--c-info); }
+        #region-information h3 { color: var(--c-info); }
+
+        /* CATEGORY: RESOURCES (Blue) - EAST */
+        #region-resources { top: 0px; left: 1000px; transform: translateY(-50%); width: 600px; border-color: var(--c-resources); }
+        #region-resources h3 { color: var(--c-resources); }
+        
+        /* CATEGORY: FORUMS (Dark Green) - SOUTH EAST */
+        #region-forums { top: 700px; left: 700px; border-color: var(--c-forums); }
+        #region-forums h3 { color: var(--c-forums); }
+
+        /* CATEGORY: EVENTS (Light Green) - SOUTH */
+        #region-events { top: 850px; left: 0px; transform: translateX(-50%); border-color: var(--c-events); }
+        #region-events h3 { color: var(--c-events); }
+        
+        /* CATEGORY: ARTS (Purple) - SOUTH WEST */
+        #region-arts { top: 700px; left: -700px; width: 400px; border-color: var(--c-arts); }
+        #region-arts h3 { color: var(--c-arts); }
+        
+        /* CATEGORY: NSFW/Dark Arts (Grey) - NORTH WEST */
+        #region-darkarts { top: -650px; left: -800px; border-color: var(--c-nsfw); }
+        #region-darkarts h3 { color: var(--c-nsfw); }
+
+        /* CATEGORY: CLUB (Red) - CENTER */
+        #region-club { 
+            top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            border-color: var(--c-club); 
+            background: rgba(239, 68, 68, 0.1); 
+            backdrop-filter: blur(5px);
+            z-index: 5;
+        }
+        #region-club h3 { color: var(--c-club); text-align: center; font-size: 2rem; margin: 0; }
+        #region-club p { text-align: center; }
+
+        .neighborhood-map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; transition: opacity 0.5s ease; }
+        .house-node { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; overflow: hidden; display:flex; flex-direction:column; }
+        .room-detail { margin-top: auto; padding: 10px; background: rgba(0,0,0,0.2); font-size: 0.8rem; opacity: 0; transition: opacity 0.3s ease; }
+        .card-img { height: 150px; background-color: var(--bg-card); overflow: hidden; border-radius: 8px; margin-bottom: 0.5rem; }
+        .resource-category { border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; }
+        .resource-category h4 { color: var(--text-primary); margin-bottom: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+
+        .latent-layer { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; overflow: hidden; clip-path: url(#rorschach-clip); background-color: var(--bg-core); opacity: 0; transition: opacity 0.3s ease; }
+        .latent-layer.active { opacity: 1; }
+
+        /* =========================================
+           MODE 2: WEB 1.0 (CLASSIC) - Themes
+           ========================================= */
+        #classic-root { overflow-y: auto; padding: 20px; transition: background-color 0.3s, color 0.3s; height: 100vh; }
+        .classic-netscape { background: #c0c0c0; color: #000000; font-family: 'Times New Roman', serif; }
+        .classic-netscape .classic-container { background: #fff; border: 2px solid #000; border-right-color: #808080; border-bottom-color: #808080; }
+        .classic-netscape a { color: #0000ff; }
+        .classic-aol { background: #000099; color: #ffff00; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
+        .classic-aol .classic-container { background: #0000cc; border: 4px ridge #0099ff; color: #fff; }
+        .classic-aol a { color: #ff0000; font-weight: bold; }
+        .classic-aol .classic-header { border-bottom: 2px dashed #ffff00; }
+        .classic-angelfire { background: #000000; color: #00ff00; font-family: 'Courier Prime', monospace; background-image: radial-gradient(#111 15%, transparent 16%), radial-gradient(#111 15%, transparent 16%); background-size: 20px 20px; }
+        .classic-angelfire .classic-container { background: #000; border: 1px solid #00ff00; }
+        .classic-angelfire a { color: #ff00ff; text-decoration: none; }
+        .classic-angelfire a:hover { background: #ff00ff; color: #000; }
+        .classic-container { width: 800px; margin: 0 auto; padding: 10px; margin-bottom: 50px; }
+        .classic-header { text-align: center; border-bottom: 2px solid currentColor; margin-bottom: 20px; }
+        .classic-marquee { background: #000; color: #0f0; font-family: monospace; padding: 5px; overflow: hidden; white-space: nowrap; border: 1px solid #fff; }
+        .classic-marquee span { display: inline-block; animation: scroll-left 10s linear infinite; }
+        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .classic-nav { text-align: center; margin-bottom: 20px; }
+        .classic-nav a { margin: 0 5px; text-decoration: underline; cursor: pointer; font-size: 0.9rem; }
+        .classic-section { margin-bottom: 30px; scroll-margin-top: 20px; }
+        .classic-section h2 { border: 1px solid currentColor; padding: 2px 5px; font-size: 1.2rem; margin-bottom: 10px; opacity: 0.8; }
+        .classic-table { width: 100%; border-collapse: collapse; border: 1px solid currentColor; }
+        .classic-table td { border: 1px solid currentColor; padding: 5px; vertical-align: top; }
+        .classic-footer { text-align: center; font-size: 0.8rem; border-top: 1px solid currentColor; padding-top: 10px; margin-top: 20px; }
+
+        /* =========================================
+           MODE 3: WEB 2.0 (MODERN SOCIAL)
+           ========================================= */
+        #web2-root { background: var(--bg-core); color: var(--text-primary); font-family: var(--font-main); overflow-y: auto; height: 100vh; }
+        .reddit-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0.5rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .reddit-logo { font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .reddit-logo span { background: var(--c-club); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .reddit-container { max-width: 1000px; margin: 1.5rem auto; display: grid; grid-template-columns: 1fr 312px; gap: 1.5rem; padding: 0 1rem; }
+        .reddit-feed { display: flex; flex-direction: column; gap: 0.75rem; }
+        .reddit-post { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 0; display: flex; cursor: pointer; }
+        .reddit-post:hover { border-color: var(--accent); }
+        .reddit-votes { width: 40px; background: rgba(0,0,0,0.1); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 0.5rem 0; gap: 0.25rem; font-weight: 700; font-size: 0.8rem; border-radius: 4px 0 0 4px; }
+        .reddit-content { padding: 0.5rem 1rem 0.5rem 0.5rem; flex: 1; }
+        .reddit-meta { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .reddit-meta strong { color: var(--text-primary); font-weight: 700; }
+        .reddit-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.4; color: var(--text-primary); }
+        .reddit-body { font-size: 0.9rem; margin-bottom: 0.5rem; line-height: 1.5; color: var(--text-secondary); }
+        .reddit-actions { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; }
+        .reddit-action { display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; border-radius: 2px; }
+        .reddit-action:hover { background: rgba(255,255,255,0.1); }
+        .reddit-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+        .reddit-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 1rem; color: var(--text-primary); }
+        .reddit-widget h3 { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+        .reddit-community-info { display: flex; flex-direction: column; gap: 0.5rem; }
+        .reddit-btn { background: var(--accent); color: white; border: none; border-radius: 999px; padding: 0.5rem 1rem; font-weight: 700; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .reddit-btn:hover { opacity: 0.9; }
+        .reddit-btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+        .reddit-btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .reddit-nav-list { display: flex; gap: 1rem; }
+        .reddit-nav-item { cursor: pointer; padding: 0.5rem; border-radius: 4px; color: var(--text-primary); font-weight: 500; text-decoration: none; }
+        .reddit-nav-item:hover { background-color: rgba(255,255,255,0.1); }
+        .reddit-nav-item.active { background-color: rgba(255,255,255,0.1); font-weight: 700; }
+
+        /* --- HUD --- */
+        #hud { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; gap: 0.5rem; background: rgba(15, 23, 42, 0.9); padding: 0.75rem; border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(10px); width: max-content; max-width: 95vw; flex-wrap: wrap; justify-content: center; align-items: center; }
+        .hud-light { background: rgba(255, 255, 255, 0.9) !important; border: 1px solid #ccc !important; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .hud-light .hud-btn { color: #333 !important; }
+        .hud-light .version-btn { color: #555 !important; border-color: #ccc !important; }
+        .hud-light .version-btn.active { background: #333 !important; color: #fff !important; }
+        .hud-btn { color: var(--text-secondary); font-weight: 600; cursor: pointer; padding: 0.5rem 1rem; border-radius: 8px; transition: var(--transition); white-space: nowrap; border:none; background: transparent; }
+        .hud-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+        .hud-btn.active { background: var(--accent); color: #fff; }
+        .version-toggle { display: flex; gap: 0; margin-right: 0.5rem; }
+        .version-btn { font-family: monospace; font-size: 0.8rem; padding: 0.5rem 0.75rem; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; background: transparent; }
+        .version-btn:first-child { border-radius: 8px 0 0 8px; }
+        .version-btn:last-child { border-radius: 0 8px 8px 0; }
+        .version-btn:not(:first-child) { border-left: none; }
+        .version-btn:hover { background: rgba(255,255,255,0.05); }
+        .version-btn.active { background: var(--text-primary); color: var(--bg-core); border-color: var(--text-primary); }
+        .controls-hidden .aesthetic-controls { display: none; }
+        select.hud-btn { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: transparent; border: 1px solid transparent; text-align: center; font-family: inherit; }
+        select.hud-btn option { background-color: var(--bg-card); color: var(--text-primary); text-align: left; }
+    </style>
+</head>
+<body class="theme-default">
+
+    <!-- VIEW 1: ZUI -->
+    <div id="zui-root" class="view-root">
+        <div id="world" class="world-container">
+            <div class="island-map">
+                <!-- EXTERNAL MAP IMAGE -->
+                <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/lsc_sitemap_first3.png" alt="Latent Space Island Map">
+                
+                <!-- 0. CLUB (Center) -->
+                <div id="region-club" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/7_Club_basic2.png" class="region-bg">
+                    <h3>The Club</h3>
+                    <p style="margin:0;">Central Hub.</p>
+                </div>
+
+                <!-- 1. INFORMATION (Orange) -->
+                <div id="region-information" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Info_basic.png" class="region-bg">
+                    <h3>Information</h3>
+                    <p>The Seat of Governance.</p>
+                    <div id="zui-info-grid" class="neighborhood-map">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 2. RESOURCES (Blue) -->
+                <div id="region-resources" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Resources_basic1.png" class="region-bg">
+                    <h3>Resources</h3>
+                    <p>The Toolkit.</p>
+                    <div id="zui-resource-grid" class="neighborhood-map">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 3. FORUMS (Dark Green) -->
+                <div id="region-forums" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Forums_basic.png" class="region-bg">
+                    <h3>Forums</h3>
+                    <p>(Placeholder)</p>
+                </div>
+                <!-- 4. EVENTS (Light Green) -->
+                <div id="region-events" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/4_Events_basic1.png" class="region-bg">
+                    <h3>Events</h3>
+                    <p>(Placeholder)</p>
+                </div>
+                <!-- 5. ARTS (Purple) -->
+                <div id="region-arts" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/5_Arts_basic.png" class="region-bg">
+                    <h3>Arts</h3>
+                    <p>(Placeholder)</p>
+                </div>
+                <!-- 6. NSFW (Grey) -->
+                <div id="region-darkarts" class="region-node">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/6_DarkArts_basic1.png" class="region-bg">
+                    <h3>Dark Arts</h3>
+                    <p>Restricted.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="cloud-layer" onclick="handleCloudClick()">
+            <div class="cloud-content">
+                <h1>Latent Space Club</h1>
+                <p>Art in the Age of Intelligence</p>
+            </div>
+            <div id="scroll-hint" class="scroll-hint">SELECT A STYLE TO ENTER</div>
+        </div>
+        
+        <div id="latent-layer" class="latent-layer"></div>
+        <svg width="0" height="0" style="position: absolute;">
+            <defs><clipPath id="rorschach-clip" clipPathUnits="userSpaceOnUse"><path id="blob-path" d="" /></clipPath></defs>
+        </svg>
+    </div>
+
+    <!-- VIEW 2: WEB 1.0 -->
+    <div id="classic-root" class="view-root hidden classic-netscape">
+        <div class="classic-container">
+            <div class="classic-header">
+                <h1>Latent Space Club</h1>
+                <div class="classic-marquee"><span>*** WELCOME ***</span></div>
+            </div>
+            <div class="classic-nav">
+                <a onclick="document.getElementById('classic-info').scrollIntoView()">[Information]</a>
+                <a onclick="document.getElementById('classic-resources').scrollIntoView()">[Resources]</a>
+                <!-- ... other links ... -->
+            </div>
+            
+            <div id="classic-info" class="classic-section">
+                <h2>Information</h2>
+                <p>Charter | Rules | FAQ | Contact</p>
+            </div>
+            
+            <div id="classic-resources" class="classic-section">
+                <h2>Resources</h2>
+                <table class="classic-table" id="classic-resource-table"></table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: WEB 2.0 -->
+    <div id="web2-root" class="view-root hidden">
+        <div class="reddit-header">
+            <div class="reddit-logo"><span>L</span> Latent Space Club</div>
+            <div class="reddit-nav-list">
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Club')" style="color:var(--c-club);">Club</a>
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Information')" style="color:var(--c-info);">Information</a>
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Resources')" style="color:var(--c-resources);">Resources</a>
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Forums')" style="color:var(--c-forums);">Forums</a>
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Events')" style="color:var(--c-events);">Events</a>
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Arts')" style="color:var(--c-arts);">Arts</a>
+                <a class="reddit-nav-item" onclick="renderWeb2Content('Dark Arts')" style="color:var(--c-nsfw);">Dark Arts</a>
+            </div>
+        </div>
+        <div class="reddit-container">
+            <div class="reddit-feed" id="web2-feed"></div>
+            <div class="reddit-sidebar">
+                <div class="reddit-widget">
+                    <h3>About Community</h3>
+                    <div class="reddit-community-info">
+                        <p>The social network for AI artists. Exploring the latent space together.</p>
+                        <div style="font-size:0.9rem; margin-top:0.5rem;"><strong>4.2k</strong> Members &nbsp;•&nbsp; <strong>124</strong> Online</div>
+                        <button class="reddit-btn" style="margin-top:1rem;">Join</button>
+                    </div>
+                </div>
+                <div class="reddit-widget">
+                    <h3>Featured</h3>
+                    <p style="font-size:0.8rem;">Check out the new <strong>Dark Arts</strong> section.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud">
+        <div class="version-toggle">
+            <button class="version-btn" onclick="switchInterface('classic')">v1.0</button>
+            <button class="version-btn" onclick="switchInterface('web2')">v2.0</button>
+            <button class="version-btn active" onclick="switchInterface('zui')">ZUI</button>
+        </div>
+        <div style="width:1px; background:var(--border); height: 20px; margin: 0 0.5rem;"></div>
+        <div class="aesthetic-controls" style="display:flex; gap:0.5rem;">
+            <button class="hud-btn" onclick="selectStyle('default')">Default</button>
+            <button class="hud-btn" onclick="activateCycleMode()">I'm not sure</button>
+            <!-- CALIBRATE BUTTON (HIDDEN FEATURE) -->
+            <button class="hud-btn" style="opacity:0.5; font-size:0.7rem;" onclick="toggleCalibrationMode()">Calibrate</button>
+            
+            <div style="width:1px; background:var(--border); height: 20px; margin: 0 0.5rem;"></div>
+            <button class="hud-btn" onclick="selectStyle('cozy')">Cozy</button>
+            <button class="hud-btn" onclick="selectStyle('futuristic')">Futuristic</button>
+            <button class="hud-btn" onclick="selectStyle('city')">City</button>
+            <button class="hud-btn" onclick="selectStyle('candy')">Candy</button>
+            <button class="hud-btn" onclick="selectStyle('nightmare')">Nightmare</button>
+            <select class="hud-btn" onchange="selectStyle(this.value)">
+                <option value="" disabled selected>Other...</option>
+                <option value="forest-light">Forest Light</option>
+                <option value="forest-dark">Forest Dark</option>
+                <option value="icy-cave">Icy Cave</option>
+                <option value="icy-moon">Icy Moon</option>
+                <option value="desert-planet">Desert Planet</option>
+                <option value="desert-island">Desert Island</option>
+                <option value="digital-realm">Digital Realm</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        function generateAbstractSVG(seed) {
+            const hue = (seed.length * 50) % 360;
+            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"><rect width="100" height="100" fill="hsl(${hue}, 20%, 20%)"/><circle cx="50" cy="50" r="40" fill="none" stroke="hsl(${hue}, 70%, 60%)" stroke-width="2" opacity="0.5"/><path d="M0 100 L100 0" stroke="hsl(${hue}, 70%, 60%)" stroke-width="1" opacity="0.3"/></svg>`;
+        }
+
+        const groupedResources = {
+            "Generative Art": [
+                { title: "Midjourney Docs", desc: "Parameter guide", link: "#" },
+                { title: "Stable Diffusion", desc: "Local generation", link: "#" },
+                { title: "PromptHero", desc: "Inspiration", link: "#" }
+            ],
+            "Models & Training": [
+                { title: "Hugging Face", desc: "Model hub", link: "#" },
+                { title: "Civitai", desc: "Fine-tuning", link: "#" }
+            ],
+            "Tools": [
+                { title: "ControlNet", desc: "Composition", link: "#" }
+            ]
+        };
+
+        const state = {
+            currentInterface: 'zui', x: 0, y: 0, zoom: 0.5,
+            targetX: 0, targetY: 0, targetZoom: 0.5,
+            keys: { w: false, a: false, s: false, d: false, shift: false },
+            mode: 'locked', currentTheme: 'default', classicThemeIndex: 0,
+            isCalibrating: false
+        };
+        const CONFIG = { minZoom: 0.2, maxZoom: 50.0, baseSpeed: 15, damping: 0.1 };
+        const themesList = ['cozy', 'futuristic', 'city', 'candy', 'nightmare', 'forest-light', 'forest-dark', 'icy-cave', 'icy-moon', 'desert-planet', 'desert-island', 'digital-realm'];
+        const classicThemes = ['classic-netscape', 'classic-aol', 'classic-angelfire'];
+        let cycleIndex = 0; let lastScrollTime = 0; let isLensActive = false;
+
+        // --- CALIBRATION TOOL ---
+        function toggleCalibrationMode() {
+            state.isCalibrating = !state.isCalibrating;
+            alert(state.isCalibrating ? "Calibration Mode ON: Drag regions to position. Check console for coords." : "Calibration Mode OFF");
+            
+            const regions = document.querySelectorAll('.region-node');
+            regions.forEach(el => {
+                if (state.isCalibrating) {
+                    el.onmousedown = dragMouseDown;
+                    el.style.border = "2px dashed yellow";
+                } else {
+                    el.onmousedown = null;
+                    el.style.border = "";
+                }
+            });
+        }
+
+        function dragMouseDown(e) {
+            e.preventDefault();
+            let pos3 = e.clientX;
+            let pos4 = e.clientY;
+            const elmnt = e.target.closest('.region-node');
+
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+
+            function elementDrag(e) {
+                e.preventDefault();
+                let pos1 = pos3 - e.clientX;
+                let pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                // IMPORTANT: Remove transform during drag to see raw top/left
+                elmnt.style.transform = "none"; 
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                console.log(`ID: #${elmnt.id} | Top: ${elmnt.style.top} | Left: ${elmnt.style.left}`);
+            }
+        }
+
+
+        function switchInterface(newInterface) {
+            if (newInterface === 'classic' && state.currentInterface === 'classic') {
+                state.classicThemeIndex = (state.classicThemeIndex + 1) % classicThemes.length;
+                document.getElementById('classic-root').className = `view-root ${classicThemes[state.classicThemeIndex]}`;
+                return; 
+            }
+            state.currentInterface = newInterface;
+            document.querySelectorAll('.view-root').forEach(el => el.classList.add('hidden'));
+            
+            document.querySelectorAll('.version-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = Array.from(document.querySelectorAll('.version-btn')).find(b => b.innerText.toLowerCase().includes(newInterface === 'zui' ? 'zui' : (newInterface === 'classic' ? '1.0' : '2.0')));
+            if(activeBtn) activeBtn.classList.add('active');
+
+            document.getElementById('hud').classList.remove('hud-light', 'controls-hidden');
+
+            if (newInterface === 'zui') {
+                document.getElementById('zui-root').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+                document.getElementById('hud').classList.add('controls-hidden', 'hud-light');
+                if (newInterface === 'classic') {
+                    const root = document.getElementById('classic-root');
+                    root.classList.remove('hidden');
+                    root.className = `view-root ${classicThemes[state.classicThemeIndex]}`;
+                } else if (newInterface === 'web2') {
+                    document.getElementById('web2-root').classList.remove('hidden');
+                    renderWeb2Content('Club'); 
+                }
+            }
+        }
+
+        function initZUI() {
+            const world = document.getElementById('world');
+            const latentLayer = document.getElementById('latent-layer');
+            const worldClone = world.cloneNode(true);
+            worldClone.id = 'world-clone';
+            worldClone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+            latentLayer.innerHTML = '';
+            latentLayer.appendChild(worldClone);
+        }
+
+        function renderWeb2Content(category) {
+            const feed = document.getElementById('web2-feed');
+            if(!feed) return;
+            
+            document.querySelectorAll('.reddit-nav-item').forEach(item => {
+                if(item.innerText === category) item.classList.add('active');
+                else item.classList.remove('active');
+            });
+
+            let html = '';
+            if (category === 'Club') {
+                html += createRedditPost('Welcome to the LSC', 'This is the central hub for the Latent Space Club.', 'r/club', 'admin');
+            } else if (category === 'Resources') {
+                Object.entries(groupedResources).forEach(([group, items]) => {
+                    items.forEach(item => {
+                        html += createRedditPost(item.title, item.desc, `r/${group.replace(/\s/g,'')}`, 'admin');
+                    });
+                });
+            } else if (category === 'Information') {
+                html += createRedditPost('Community Charter', 'We believe in Transparency, Respect, and Innovation...', 'r/announcements', 'admin');
+                html += createRedditPost('Official Rules', '1. No hate speech. 2. Credit artists...', 'r/rules', 'mod_team');
+                html += createRedditPost('FAQ', 'Q: How do I join? A: Just start creating...', 'r/help', 'automod');
+            } else if (category === 'Forums') {
+                html += createRedditPost('Weekly Discussion Thread', 'What are you working on this week?', 'r/general', 'automod');
+                html += createRedditPost('Is Prompt Engineering dead?', 'Discussion about the future of prompting...', 'r/discussion', 'user123');
+            } else if (category === 'Events') {
+                html += createRedditPost('Hackathon 2026', 'Join us for the annual latent space hackathon...', 'r/events', 'admin');
+            } else if (category === 'Arts') {
+                html += createRedditPost('My latest generation using Flux', '[Image Content Placeholder]', 'r/showcase', 'artist_x');
+            } else if (category === 'Dark Arts') {
+                html += createRedditPost('NSFW/Experimental Content Warning', 'This section contains unrestricted output...', 'r/darkarts', 'system');
+            }
+            feed.innerHTML = html;
+        }
+
+        function createRedditPost(title, body, subreddit, author) {
+            return `
+            <div class="reddit-post">
+                <div class="reddit-votes">⬆ <span>${Math.floor(Math.random()*500)}</span> ⬇</div>
+                <div class="reddit-content">
+                    <div class="reddit-meta">Posted in <strong>${subreddit}</strong> by u/${author} • 4h ago</div>
+                    <div class="reddit-title">${title}</div>
+                    <div class="reddit-body">${body}</div>
+                    <div class="reddit-actions">
+                        <span class="reddit-action">💬 ${Math.floor(Math.random()*50)} Comments</span>
+                        <span class="reddit-action">↗ Share</span>
+                        <span class="reddit-action">★ Save</span>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function populateContent() {
+            const zuiGrid = document.getElementById('zui-resource-grid');
+            const classicTable = document.getElementById('classic-resource-table');
+            
+            const zuiInfoGrid = document.getElementById('zui-info-grid');
+            if(zuiInfoGrid) {
+                 zuiInfoGrid.innerHTML = `
+                    <div class="house-node"><div class="card-img" style="background:#334155; display:flex; align-items:center; justify-content:center; font-size:3rem;">📜</div><h4>Charter</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node"><div class="card-img" style="background:#475569; display:flex; align-items:center; justify-content:center; font-size:3rem;">⚖️</div><h4>Rules</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node"><div class="card-img" style="background:#334155; display:flex; align-items:center; justify-content:center; font-size:3rem;">❓</div><h4>FAQ</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node"><div class="card-img" style="background:#475569; display:flex; align-items:center; justify-content:center; font-size:3rem;">📬</div><h4>Contact</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                 `;
+            }
+
+            Object.entries(groupedResources).forEach(([category, items]) => {
+                const catBlock = document.createElement('div');
+                catBlock.className = 'resource-category';
+                catBlock.innerHTML = `<h4 style="margin:0 0 10px 0; color:var(--accent);">${category}</h4>`;
+                const itemGrid = document.createElement('div');
+                itemGrid.style.display = 'grid'; itemGrid.style.gridTemplateColumns = '1fr 1fr'; itemGrid.style.gap = '10px';
+                
+                if(classicTable) classicTable.innerHTML += `<tr><td colspan="3" style="background:currentColor; color:var(--bg-core); font-weight:bold; text-align:center;">${category}</td></tr>`;
+
+                items.forEach(item => {
+                    itemGrid.innerHTML += `
+                        <div class="house-node">
+                            <div class="card-img"><img src='${generateAbstractSVG(item.title)}' style="width:100%; height:100%; object-fit:cover;"></div>
+                            <h4>${item.title}</h4>
+                            <div class="room-detail">LEVEL 4: ROOM<br>${item.desc}</div>
+                        </div>`;
+                    
+                    if(classicTable) classicTable.innerHTML += `<tr><td>Icon</td><td><b>${item.title}</b><br>${item.desc}</td><td><a href="#">[LINK]</a></td></tr>`;
+                });
+                
+                catBlock.appendChild(itemGrid);
+                if(zuiGrid) zuiGrid.appendChild(catBlock);
+            });
+        }
+
+        function activateCycleMode() {
+            state.mode = 'cycling'; state.targetZoom = 0.5; isLensActive = true;
+            document.getElementById('latent-layer').classList.add('active');
+            document.getElementById('cloud-layer').classList.add('clickable');
+            document.body.classList.remove('unlocked');
+            document.getElementById('scroll-hint').innerHTML = "SCROLL TO PREVIEW<br><span style='font-size:0.7em'>CLICK TO ENTER</span>";
+            updateHud('I\'m not sure');
+            updateCycleVisuals();
+        }
+
+        function handleCloudClick() {
+            if (state.mode === 'cycling') selectStyle(themesList[cycleIndex]);
+        }
+
+        function selectStyle(theme) {
+            state.mode = 'unlocked'; state.currentTheme = theme;
+            document.body.className = 'unlocked';
+            
+            if (theme !== 'default') {
+                document.body.classList.add(`theme-${theme}`);
+            } else {
+                themesList.forEach(t => document.body.classList.remove(`theme-${t}`));
+            }
+
+            isLensActive = false;
+            document.getElementById('latent-layer').classList.remove('active');
+            document.getElementById('cloud-layer').classList.remove('clickable');
+            document.getElementById('scroll-hint').innerHTML = "SCROLL TO DESCEND<br><span style='font-size:0.7em; opacity:0.7'>CTRL+SCROLL TO SHIFT VIBE</span>";
+            updateHud(theme);
+        }
+
+        function updateHud(activeLabel) {
+            document.querySelectorAll('.hud-btn').forEach(btn => {
+                if (btn.innerText.toLowerCase().includes(activeLabel.toLowerCase()) || 
+                   (activeLabel === 'default' && btn.innerText === 'Default')) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        function handleThemeCycle(deltaY) {
+            const now = Date.now();
+            if (now - lastScrollTime < 150) return; lastScrollTime = now;
+            if (deltaY > 0) cycleIndex = (cycleIndex + 1) % themesList.length;
+            else cycleIndex = (cycleIndex - 1 + themesList.length) % themesList.length;
+            const theme = themesList[cycleIndex];
+            if (state.mode === 'cycling') updateCycleVisuals();
+            else if (state.mode === 'unlocked') selectStyle(theme);
+        }
+
+        function updateCycleVisuals() {
+            const theme = themesList[cycleIndex];
+            document.getElementById('latent-layer').className = `latent-layer active theme-${theme}`;
+            updateHud(theme);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Shift') state.keys.shift = true;
+            if (state.mode !== 'unlocked') return;
+            const k = e.key.toLowerCase(); if (state.keys.hasOwnProperty(k)) state.keys[k] = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') state.keys.shift = false;
+            const k = e.key.toLowerCase(); if (state.keys.hasOwnProperty(k)) state.keys[k] = false;
+        });
+        window.addEventListener('blur', () => { state.keys = { w: false, a: false, s: false, d: false, shift: false }; });
+
+        window.addEventListener('wheel', (e) => {
+            if (state.currentInterface !== 'zui') return; 
+            e.preventDefault();
+            if (state.mode === 'cycling') {
+                handleThemeCycle(e.deltaY);
+            } else if (state.mode === 'unlocked') {
+                if (e.ctrlKey) {
+                    handleThemeCycle(e.deltaY);
+                    return;
+                }
+                const zoomSensitivity = 0.001;
+                let newZoom = state.targetZoom - e.deltaY * zoomSensitivity;
+                newZoom = Math.max(CONFIG.minZoom, Math.min(CONFIG.maxZoom, newZoom));
+                const scaleRatio = newZoom / state.targetZoom;
+                const mouseX = e.clientX - window.innerWidth / 2;
+                const mouseY = e.clientY - window.innerHeight / 2;
+                state.targetX = state.targetX * scaleRatio + mouseX * (1 - scaleRatio);
+                state.targetY = state.targetY * scaleRatio + mouseY * (1 - scaleRatio);
+                state.targetZoom = newZoom;
+            }
+        }, { passive: false });
+
+        function animate() {
+            if (state.currentInterface === 'zui') {
+                let speed = CONFIG.baseSpeed / state.zoom;
+                if (state.keys.shift) speed *= 0.7;
+
+                if (state.keys.w) state.targetY += speed;
+                if (state.keys.s) state.targetY -= speed;
+                if (state.keys.a) state.targetX += speed;
+                if (state.keys.d) state.targetX -= speed;
+
+                state.x += (state.targetX - state.x) * CONFIG.damping;
+                state.y += (state.targetY - state.y) * CONFIG.damping;
+                state.zoom += (state.targetZoom - state.zoom) * CONFIG.damping;
+
+                const tStr = `translate3d(${state.x}px, ${state.y}px, 0) scale(${state.zoom})`;
+                const worldEl = document.getElementById('world');
+                if (worldEl) worldEl.style.transform = tStr;
+                const clone = document.getElementById('world-clone');
+                if(clone) clone.style.transform = tStr;
+
+                const neighborhoodRes = document.getElementById('zui-resource-grid');
+                if (neighborhoodRes) {
+                    if (state.zoom > 3.5) { neighborhoodRes.style.opacity = 1; neighborhoodRes.style.pointerEvents = 'auto'; }
+                    else { neighborhoodRes.style.opacity = 0; neighborhoodRes.style.pointerEvents = 'none'; }
+                }
+                const neighborhoodInfo = document.getElementById('zui-info-grid');
+                if (neighborhoodInfo) {
+                    if (state.zoom > 3.5) { neighborhoodInfo.style.opacity = 1; neighborhoodInfo.style.pointerEvents = 'auto'; }
+                    else { neighborhoodInfo.style.opacity = 0; neighborhoodInfo.style.pointerEvents = 'none'; }
+                }
+                document.querySelectorAll('.room-detail').forEach(room => room.style.opacity = state.zoom > 12 ? 1 : 0);
+
+                let cloudOpacity = 1;
+                if (state.mode === 'unlocked') cloudOpacity = Math.max(0, Math.min(1, 1.5 - state.zoom));
+                const cloudLayer = document.getElementById('cloud-layer');
+                if (cloudLayer) {
+                    cloudLayer.style.opacity = cloudOpacity;
+                    if(state.mode === 'cycling') cloudLayer.style.pointerEvents = 'auto';
+                    else cloudLayer.style.pointerEvents = cloudOpacity < 0.1 ? 'none' : 'auto';
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        const blobPath = document.getElementById('blob-path');
+        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+        const POINTS = 24, RADIUS_BASE = 140, VARIANCE = 70, SPEED = 0.0005, DROPLET_COUNT = 4;
+        document.addEventListener('mousemove', (e) => { mouseX = e.pageX; mouseY = e.pageY; });
+        function getNoise(index, time) { return Math.sin(index * 0.4 + time) + Math.cos(index * 1.5 - time * 2) * 0.3 + Math.sin(time * 0.5 + index * 0.1) * 0.5; }
+        function drawSmallBlob(cx, cy, r) { return ` M ${cx - r}, ${cy} a ${r},${r} 0 1,0 ${r * 2},0 a ${r},${r} 0 1,0 -${r * 2},0`; }
+        function animateBlob(time) {
+            if (isLensActive && blobPath) {
+                const t = time * SPEED;
+                let d = "";
+                const points = [];
+                for (let i = 0; i <= POINTS; i++) {
+                    const angle = (Math.PI * i) / POINTS; 
+                    const r = RADIUS_BASE + getNoise(i, t) * VARIANCE;
+                    points.push({x: Math.sin(angle) * r, y: Math.cos(angle) * r});
+                }
+                const safeY = Math.min(mouseY, window.innerHeight - 300);
+                d += `M ${mouseX + points[0].x} ${safeY - points[0].y}`;
+                for (let i = 1; i < points.length; i++) d += ` L ${mouseX + points[i].x} ${safeY - points[i].y}`;
+                for (let i = points.length - 1; i >= 0; i--) d += ` L ${mouseX - points[i].x} ${safeY - points[i].y}`;
+                d += " Z"; 
+                for (let j = 0; j < DROPLET_COUNT; j++) {
+                    const dt = t + j * 100;
+                    const dist = RADIUS_BASE + VARIANCE * 1.3 + (Math.sin(dt*2)+Math.cos(dt*0.5)) * 30;
+                    const angle = ((j / DROPLET_COUNT) * Math.PI * 0.8 + 0.3) + Math.sin(dt) * 0.3;
+                    const dx = Math.sin(angle) * dist;
+                    const dy = Math.cos(angle) * dist;
+                    const size = 15 + Math.cos(dt * 3) * 5;
+                    d += drawSmallBlob(mouseX + dx, safeY - dy, size);
+                    d += drawSmallBlob(mouseX - dx, safeY - dy, size);
+                }
+                blobPath.setAttribute('d', d);
+            }
+            requestAnimationFrame(animateBlob);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateContent();
+            initZUI();
+            
+            state.isZoomLocked = true;
+            state.interactionMode = 'locked';
+            
+            const hint = document.getElementById('scroll-hint');
+            if(hint) hint.innerHTML = "SELECT A STYLE TO ENTER";
+            
+            updateHud('default');
+            
+            animate();
+            requestAnimationFrame(animateBlob);
+        });
+    </script>
+</body>
+</html>
