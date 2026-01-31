@@ -570,7 +570,7 @@
             mode: 'locked', currentTheme: 'default', classicThemeIndex: 0,
             isCalibrating: false
         };
-        const CONFIG = { minZoom: 0.01, maxZoom: 50.0, baseSpeed: 15, damping: 0.1 };
+        const CONFIG = { minZoom: 0.01, maxZoom: 50.0, baseSpeed: 7.5, damping: 0.1 };
         const themesList = ['cozy', 'futuristic', 'city', 'candy', 'nightmare', 'forest-light', 'forest-dark', 'icy-cave', 'icy-moon', 'desert-planet', 'desert-island', 'digital-realm'];
         const classicThemes = ['classic-netscape', 'classic-aol', 'classic-angelfire'];
         let cycleIndex = 0; let lastScrollTime = 0; let isLensActive = false;
@@ -866,7 +866,7 @@
                     handleThemeCycle(e.deltaY);
                     return;
                 }
-                const zoomSensitivity = 0.001;
+                const zoomSensitivity = 0.0005;
                 let newZoom = state.targetZoom - e.deltaY * zoomSensitivity;
                 newZoom = Math.max(CONFIG.minZoom, Math.min(CONFIG.maxZoom, newZoom));
                 const scaleRatio = newZoom / state.targetZoom;
@@ -912,7 +912,11 @@
 
                 // Update Zoom Indicator
                 const zoomInd = document.getElementById('zoom-indicator');
-                if(zoomInd) zoomInd.innerText = Math.round(state.zoom * 100) + '%';
+                if(zoomInd) {
+                    const resW = Math.round(window.innerWidth / state.zoom);
+                    const resH = Math.round(window.innerHeight / state.zoom);
+                    zoomInd.innerText = Math.round(state.zoom * 100) + '% (' + resW + 'x' + resH + ')';
+                }
             }
             requestAnimationFrame(animate);
         }
