@@ -103,38 +103,38 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
             min-width: 300px; 
             transition: transform 0.3s ease, opacity 0.3s ease;
-            cursor: grab; /* Indicates draggable */
+            cursor: grab;
         }
         .region-node:active { cursor: grabbing; }
 
-        .region-node h3 { margin-bottom: 0.5rem; font-size: 1.5rem; }
-        .region-node .region-bg { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.2; z-index:-1; border-radius:14px; object-fit:cover; pointer-events:none; }
+        .region-node h3 { margin-bottom: 0.5rem; font-size: 1.5rem; z-index: 2; position: relative; }
+        .region-node .region-bg { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.3; z-index: 0; border-radius:14px; object-fit:cover; pointer-events:none; }
         
-        /* CATEGORY: INFO (Orange) - TOP CENTER */
+        /* CATEGORY: INFO (Orange) */
         #region-information { top: -650px; left: 0px; transform: translateX(-50%); width: 600px; border-color: var(--c-info); }
         #region-information h3 { color: var(--c-info); }
 
-        /* CATEGORY: RESOURCES (Blue) - EAST */
+        /* CATEGORY: RESOURCES (Blue) */
         #region-resources { top: 0px; left: 1000px; transform: translateY(-50%); width: 600px; border-color: var(--c-resources); }
         #region-resources h3 { color: var(--c-resources); }
         
-        /* CATEGORY: FORUMS (Dark Green) - SOUTH EAST */
+        /* CATEGORY: FORUMS (Dark Green) */
         #region-forums { top: 700px; left: 700px; border-color: var(--c-forums); }
         #region-forums h3 { color: var(--c-forums); }
 
-        /* CATEGORY: EVENTS (Light Green) - SOUTH */
+        /* CATEGORY: EVENTS (Light Green) */
         #region-events { top: 850px; left: 0px; transform: translateX(-50%); border-color: var(--c-events); }
         #region-events h3 { color: var(--c-events); }
         
-        /* CATEGORY: ARTS (Purple) - SOUTH WEST */
+        /* CATEGORY: ARTS (Purple) */
         #region-arts { top: 700px; left: -700px; width: 400px; border-color: var(--c-arts); }
         #region-arts h3 { color: var(--c-arts); }
         
-        /* CATEGORY: NSFW/Dark Arts (Grey) - NORTH WEST */
+        /* CATEGORY: NSFW/Dark Arts (Grey) */
         #region-darkarts { top: -650px; left: -800px; border-color: var(--c-nsfw); }
         #region-darkarts h3 { color: var(--c-nsfw); }
 
-        /* CATEGORY: CLUB (Red) - CENTER */
+        /* CATEGORY: CLUB (Red) */
         #region-club { 
             top: 50%; left: 50%; transform: translate(-50%, -50%); 
             border-color: var(--c-club); 
@@ -143,9 +143,9 @@
             z-index: 5;
         }
         #region-club h3 { color: var(--c-club); text-align: center; font-size: 2rem; margin: 0; }
-        #region-club p { text-align: center; }
+        #region-club p { text-align: center; position: relative; z-index: 2; }
 
-        .neighborhood-map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; transition: opacity 0.5s ease; }
+        .neighborhood-map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; transition: opacity 0.5s ease; z-index: 2; }
         .house-node { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; overflow: hidden; display:flex; flex-direction:column; }
         .room-detail { margin-top: auto; padding: 10px; background: rgba(0,0,0,0.2); font-size: 0.8rem; opacity: 0; transition: opacity 0.3s ease; }
         .card-img { height: 150px; background-color: var(--bg-card); overflow: hidden; border-radius: 8px; margin-bottom: 0.5rem; }
@@ -244,18 +244,18 @@
         <div id="world" class="world-container">
             <div class="island-map">
                 <!-- EXTERNAL MAP IMAGE -->
-                <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/lsc_sitemap_first3.png" alt="Latent Space Island Map">
+                <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/0_Island%20Maps/01_Island_Basic.png" alt="Latent Space Island Map">
                 
                 <!-- 0. CLUB (Center) -->
-                <div id="region-club" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/7_Club_basic2.png" class="region-bg">
+                <div id="region-club" class="region-node" style="width:300px; padding:1rem;">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/17_Club/17_Club_basic2.png" class="region-bg">
                     <h3>The Club</h3>
                     <p style="margin:0;">Central Hub.</p>
                 </div>
 
                 <!-- 1. INFORMATION (Orange) -->
                 <div id="region-information" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Info_basic.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/11_Info/11_Info_basic.png" class="region-bg">
                     <h3>Information</h3>
                     <p>The Seat of Governance.</p>
                     <div id="zui-info-grid" class="neighborhood-map">
@@ -265,7 +265,7 @@
 
                 <!-- 2. RESOURCES (Blue) -->
                 <div id="region-resources" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Resources_basic1.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/12_Resources/12_Resources_basic1.png" class="region-bg">
                     <h3>Resources</h3>
                     <p>The Toolkit.</p>
                     <div id="zui-resource-grid" class="neighborhood-map">
@@ -275,25 +275,25 @@
 
                 <!-- 3. FORUMS (Dark Green) -->
                 <div id="region-forums" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Forums_basic.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/13_Forums/13_Forums_basic.png" class="region-bg">
                     <h3>Forums</h3>
                     <p>(Placeholder)</p>
                 </div>
                 <!-- 4. EVENTS (Light Green) -->
                 <div id="region-events" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/4_Events_basic1.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/14_Events/14_Events_basic.png" class="region-bg">
                     <h3>Events</h3>
                     <p>(Placeholder)</p>
                 </div>
                 <!-- 5. ARTS (Purple) -->
                 <div id="region-arts" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/5_Arts_basic.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/15_Arts/15_Arts_basic.png" class="region-bg">
                     <h3>Arts</h3>
                     <p>(Placeholder)</p>
                 </div>
                 <!-- 6. NSFW (Grey) -->
                 <div id="region-darkarts" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/6_DarkArts_basic1.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC_Homepage/main/assets/1_Regions/16_DA/16_DarkArts_basic1.png" class="region-bg">
                     <h3>Dark Arts</h3>
                     <p>Restricted.</p>
                 </div>
