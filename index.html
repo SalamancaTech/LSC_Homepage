@@ -92,7 +92,12 @@
             display: flex; align-items: center; justify-content: center; 
         }
         /* FIX: Use object-fit: fill to ensure exact pixel matching to container dimensions */
-        .island-map img { width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
+        .island-map img {
+            width: 10000px; height: 10000px;
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: fill; pointer-events: none;
+        }
 
         /* Regions */
         .region-node { 
@@ -326,7 +331,7 @@
         <div id="world" class="world-container">
             <div class="island-map">
                 <!-- EXTERNAL MAP IMAGE -->
-                <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/0_Island%20Maps/01_Island_Basic.png" alt="Latent Space Island Map">
+                <img src="assets/0_Island Maps/01_Island_Basic01.png" alt="Latent Space Island Map">
                 
                 <!-- 0. CLUB (Center) -->
                 <div id="region-club" class="region-node" onclick="openReader('Club')">
