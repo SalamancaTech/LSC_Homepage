@@ -103,38 +103,38 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
             min-width: 300px; 
             transition: transform 0.3s ease, opacity 0.3s ease;
-            cursor: grab; /* Indicates draggable */
+            cursor: grab;
         }
         .region-node:active { cursor: grabbing; }
 
-        .region-node h3 { margin-bottom: 0.5rem; font-size: 1.5rem; }
-        .region-node .region-bg { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.2; z-index:-1; border-radius:14px; object-fit:cover; pointer-events:none; }
+        .region-node h3 { margin-bottom: 0.5rem; font-size: 1.5rem; z-index: 2; position: relative; }
+        .region-node .region-bg { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.5; z-index: 0; border-radius:14px; object-fit:cover; pointer-events:none; }
         
-        /* CATEGORY: INFO (Orange) - TOP CENTER */
+        /* CATEGORY: INFO (Orange) */
         #region-information { top: -650px; left: 0px; transform: translateX(-50%); width: 600px; border-color: var(--c-info); }
         #region-information h3 { color: var(--c-info); }
 
-        /* CATEGORY: RESOURCES (Blue) - EAST */
+        /* CATEGORY: RESOURCES (Blue) */
         #region-resources { top: 0px; left: 1000px; transform: translateY(-50%); width: 600px; border-color: var(--c-resources); }
         #region-resources h3 { color: var(--c-resources); }
         
-        /* CATEGORY: FORUMS (Dark Green) - SOUTH EAST */
+        /* CATEGORY: FORUMS (Dark Green) */
         #region-forums { top: 700px; left: 700px; border-color: var(--c-forums); }
         #region-forums h3 { color: var(--c-forums); }
 
-        /* CATEGORY: EVENTS (Light Green) - SOUTH */
+        /* CATEGORY: EVENTS (Light Green) */
         #region-events { top: 850px; left: 0px; transform: translateX(-50%); border-color: var(--c-events); }
         #region-events h3 { color: var(--c-events); }
         
-        /* CATEGORY: ARTS (Purple) - SOUTH WEST */
+        /* CATEGORY: ARTS (Purple) */
         #region-arts { top: 700px; left: -700px; width: 400px; border-color: var(--c-arts); }
         #region-arts h3 { color: var(--c-arts); }
         
-        /* CATEGORY: NSFW/Dark Arts (Grey) - NORTH WEST */
+        /* CATEGORY: NSFW/Dark Arts (Grey) */
         #region-darkarts { top: -650px; left: -800px; border-color: var(--c-nsfw); }
         #region-darkarts h3 { color: var(--c-nsfw); }
 
-        /* CATEGORY: CLUB (Red) - CENTER */
+        /* CATEGORY: CLUB (Red) */
         #region-club { 
             top: 50%; left: 50%; transform: translate(-50%, -50%); 
             border-color: var(--c-club); 
@@ -143,14 +143,40 @@
             z-index: 5;
         }
         #region-club h3 { color: var(--c-club); text-align: center; font-size: 2rem; margin: 0; }
-        #region-club p { text-align: center; }
+        #region-club p { text-align: center; position: relative; z-index: 2; }
 
-        .neighborhood-map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; transition: opacity 0.5s ease; }
-        .house-node { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; overflow: hidden; display:flex; flex-direction:column; }
+        .neighborhood-map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; transition: opacity 0.5s ease; z-index: 2; background: rgba(15,23,42,0.9); border-radius: 12px; margin-top: 10px; backdrop-filter: blur(10px); border: 1px solid var(--border); }
+        .house-node { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; overflow: hidden; display:flex; flex-direction:column; cursor: pointer; transition: transform 0.2s; }
+        .house-node:hover { transform: scale(1.05); border-color: var(--accent); }
         .room-detail { margin-top: auto; padding: 10px; background: rgba(0,0,0,0.2); font-size: 0.8rem; opacity: 0; transition: opacity 0.3s ease; }
-        .card-img { height: 150px; background-color: var(--bg-card); overflow: hidden; border-radius: 8px; margin-bottom: 0.5rem; }
+        .card-img { height: 100px; background-color: var(--bg-card); overflow: hidden; border-radius: 8px; margin-bottom: 0.5rem; }
         .resource-category { border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; }
         .resource-category h4 { color: var(--text-primary); margin-bottom: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+
+        /* READER VIEW (MODAL) */
+        #reader-view {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            z-index: 5000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #reader-view.active { opacity: 1; pointer-events: auto; }
+        .reader-content {
+            width: 800px; max-width: 90vw; height: 80vh;
+            background: var(--bg-core); border: 1px solid var(--border); border-radius: 16px;
+            padding: 3rem; overflow-y: auto; position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .reader-close {
+            position: absolute; top: 1rem; right: 1rem;
+            background: transparent; border: none; font-size: 2rem; color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .reader-close:hover { color: var(--accent); }
+        .reader-body { font-size: 1.1rem; line-height: 1.6; color: var(--text-primary); }
+        .reader-body h1 { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .reader-body h2 { color: var(--text-primary); margin-top: 2rem; margin-bottom: 1rem; }
+        .reader-body p { margin-bottom: 1rem; }
 
         .latent-layer { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; overflow: hidden; clip-path: url(#rorschach-clip); background-color: var(--bg-core); opacity: 0; transition: opacity 0.3s ease; }
         .latent-layer.active { opacity: 1; }
@@ -158,30 +184,48 @@
         /* =========================================
            MODE 2: WEB 1.0 (CLASSIC) - Themes
            ========================================= */
-        #classic-root { overflow-y: auto; padding: 20px; transition: background-color 0.3s, color 0.3s; height: 100vh; }
-        .classic-netscape { background: #c0c0c0; color: #000000; font-family: 'Times New Roman', serif; }
-        .classic-netscape .classic-container { background: #fff; border: 2px solid #000; border-right-color: #808080; border-bottom-color: #808080; }
-        .classic-netscape a { color: #0000ff; }
-        .classic-aol { background: #000099; color: #ffff00; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
-        .classic-aol .classic-container { background: #0000cc; border: 4px ridge #0099ff; color: #fff; }
-        .classic-aol a { color: #ff0000; font-weight: bold; }
+        #classic-root { overflow-y: auto; padding: 20px; transition: background-color 0.3s, color 0.3s; height: 100vh; font-family: 'Times New Roman', serif; }
+        
+        /* 1. Netscape (Battleship Grey) */
+        .classic-netscape { background: #c0c0c0; color: #000000; }
+        .classic-netscape .classic-container { background: #fff; border: 2px outset #ffffff; }
+        .classic-netscape a { color: #0000ff; text-decoration: underline; }
+        .classic-netscape .classic-nav a { color: #0000ff; }
+        .classic-netscape .classic-header { border-bottom: 2px solid #808080; }
+
+        /* 2. AOL (Blue/Yellow) */
+        .classic-aol { background: #000099; color: #ffff00; font-family: 'Comic Sans MS', cursive, sans-serif; }
+        .classic-aol .classic-container { background: #0000cc; border: 4px ridge #0099ff; color: #ffffff; }
+        .classic-aol a { color: #ffff00; font-weight: bold; }
         .classic-aol .classic-header { border-bottom: 2px dashed #ffff00; }
+
+        /* 3. Angelfire (Matrix/Hacker) */
         .classic-angelfire { background: #000000; color: #00ff00; font-family: 'Courier Prime', monospace; background-image: radial-gradient(#111 15%, transparent 16%), radial-gradient(#111 15%, transparent 16%); background-size: 20px 20px; }
         .classic-angelfire .classic-container { background: #000; border: 1px solid #00ff00; }
         .classic-angelfire a { color: #ff00ff; text-decoration: none; }
         .classic-angelfire a:hover { background: #ff00ff; color: #000; }
+
+        /* Classic Layout Structure (Table Simulation) */
         .classic-container { width: 800px; margin: 0 auto; padding: 10px; margin-bottom: 50px; }
-        .classic-header { text-align: center; border-bottom: 2px solid currentColor; margin-bottom: 20px; }
-        .classic-marquee { background: #000; color: #0f0; font-family: monospace; padding: 5px; overflow: hidden; white-space: nowrap; border: 1px solid #fff; }
-        .classic-marquee span { display: inline-block; animation: scroll-left 10s linear infinite; }
+        .classic-header { text-align: center; margin-bottom: 20px; }
+        .classic-marquee { background: #000; color: #ffff00; font-family: monospace; padding: 5px; overflow: hidden; white-space: nowrap; border: 2px inset #fff; margin-top: 10px; font-weight: bold; }
+        .classic-marquee span { display: inline-block; animation: scroll-left 8s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .classic-nav { text-align: center; margin-bottom: 20px; }
-        .classic-nav a { margin: 0 5px; text-decoration: underline; cursor: pointer; font-size: 0.9rem; }
+        
+        .classic-nav { text-align: center; margin-bottom: 20px; background: #e0e0e0; border: 2px outset #fff; padding: 5px; }
+        .classic-nav a { margin: 0 10px; cursor: pointer; font-size: 1.0rem; font-weight: bold; }
+        
+        .classic-layout-table { width: 100%; border-collapse: collapse; border: 2px inset #fff; }
+        .classic-sidebar-cell { width: 150px; vertical-align: top; background: #d0d0d0; padding: 10px; border-right: 2px inset #fff; }
+        .classic-main-cell { vertical-align: top; padding: 20px; background: #fff; }
+        
         .classic-section { margin-bottom: 30px; scroll-margin-top: 20px; }
-        .classic-section h2 { border: 1px solid currentColor; padding: 2px 5px; font-size: 1.2rem; margin-bottom: 10px; opacity: 0.8; }
-        .classic-table { width: 100%; border-collapse: collapse; border: 1px solid currentColor; }
-        .classic-table td { border: 1px solid currentColor; padding: 5px; vertical-align: top; }
-        .classic-footer { text-align: center; font-size: 0.8rem; border-top: 1px solid currentColor; padding-top: 10px; margin-top: 20px; }
+        .classic-section h2 { border-bottom: 1px solid #000; font-size: 1.5rem; margin-bottom: 10px; font-family: 'Times New Roman', serif; }
+        
+        .classic-table { width: 100%; border: 1px solid #000; border-collapse: collapse; }
+        .classic-table td { border: 1px solid #000; padding: 5px; }
+
+        .classic-footer { text-align: center; font-size: 0.8rem; border-top: 1px solid #000; padding-top: 10px; margin-top: 20px; }
 
         /* =========================================
            MODE 3: WEB 2.0 (MODERN SOCIAL)
@@ -244,18 +288,18 @@
         <div id="world" class="world-container">
             <div class="island-map">
                 <!-- EXTERNAL MAP IMAGE -->
-                <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/lsc_sitemap_first3.png" alt="Latent Space Island Map">
+                <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/0_Island%20Maps/01_Island_Basic.png" alt="Latent Space Island Map">
                 
                 <!-- 0. CLUB (Center) -->
-                <div id="region-club" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/7_Club_basic2.png" class="region-bg">
+                <div id="region-club" class="region-node" onclick="openReader('Club')">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/17_Club/17_Club_basic2.png" class="region-bg">
                     <h3>The Club</h3>
                     <p style="margin:0;">Central Hub.</p>
                 </div>
 
                 <!-- 1. INFORMATION (Orange) -->
                 <div id="region-information" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Info_basic.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/11_Info/11_Info_basic.png" class="region-bg">
                     <h3>Information</h3>
                     <p>The Seat of Governance.</p>
                     <div id="zui-info-grid" class="neighborhood-map">
@@ -265,7 +309,7 @@
 
                 <!-- 2. RESOURCES (Blue) -->
                 <div id="region-resources" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Resources_basic1.png" class="region-bg">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/12_Resources/12_Resources_basic1.png" class="region-bg">
                     <h3>Resources</h3>
                     <p>The Toolkit.</p>
                     <div id="zui-resource-grid" class="neighborhood-map">
@@ -274,26 +318,26 @@
                 </div>
 
                 <!-- 3. FORUMS (Dark Green) -->
-                <div id="region-forums" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/1_Forums_basic.png" class="region-bg">
+                <div id="region-forums" class="region-node" onclick="openReader('Forums')">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/13_Forums/13_Forums_basic.png" class="region-bg">
                     <h3>Forums</h3>
                     <p>(Placeholder)</p>
                 </div>
                 <!-- 4. EVENTS (Light Green) -->
-                <div id="region-events" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/4_Events_basic1.png" class="region-bg">
+                <div id="region-events" class="region-node" onclick="openReader('Events')">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/14_Events/14_Events_basic.png" class="region-bg">
                     <h3>Events</h3>
                     <p>(Placeholder)</p>
                 </div>
                 <!-- 5. ARTS (Purple) -->
-                <div id="region-arts" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/5_Arts_basic.png" class="region-bg">
+                <div id="region-arts" class="region-node" onclick="openReader('Arts')">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/15_Arts/15_Arts_basic.png" class="region-bg">
                     <h3>Arts</h3>
                     <p>(Placeholder)</p>
                 </div>
                 <!-- 6. NSFW (Grey) -->
-                <div id="region-darkarts" class="region-node">
-                    <img src="https://raw.githubusercontent.com/SalamancaTech/LSC-Archives/main/Instructions/6_DarkArts_basic1.png" class="region-bg">
+                <div id="region-darkarts" class="region-node" onclick="openReader('Dark Arts')">
+                    <img src="https://raw.githubusercontent.com/salamancatech/lsc_homepage/main/assets/1_Regions/16_DA/16_DarkArts_basic1.png" class="region-bg">
                     <h3>Dark Arts</h3>
                     <p>Restricted.</p>
                 </div>
@@ -314,27 +358,56 @@
         </svg>
     </div>
 
-    <!-- VIEW 2: WEB 1.0 -->
+    <!-- VIEW 2: WEB 1.0 (AUTHENTIC RETRO) -->
     <div id="classic-root" class="view-root hidden classic-netscape">
         <div class="classic-container">
             <div class="classic-header">
                 <h1>Latent Space Club</h1>
-                <div class="classic-marquee"><span>*** WELCOME ***</span></div>
+                <div class="classic-marquee"><span>*** UNDER CONSTRUCTION ***</span></div>
             </div>
+            
             <div class="classic-nav">
                 <a onclick="document.getElementById('classic-info').scrollIntoView()">[Information]</a>
                 <a onclick="document.getElementById('classic-resources').scrollIntoView()">[Resources]</a>
-                <!-- ... other links ... -->
+                <a onclick="document.getElementById('classic-forums').scrollIntoView()">[Forums]</a>
+                <a onclick="document.getElementById('classic-events').scrollIntoView()">[Events]</a>
+                <a onclick="document.getElementById('classic-arts').scrollIntoView()">[Arts]</a>
+                <a onclick="document.getElementById('classic-darkarts').scrollIntoView()">[Dark Arts]</a>
+                <a onclick="document.getElementById('classic-club').scrollIntoView()">[Club]</a>
             </div>
-            
-            <div id="classic-info" class="classic-section">
-                <h2>Information</h2>
-                <p>Charter | Rules | FAQ | Contact</p>
-            </div>
-            
-            <div id="classic-resources" class="classic-section">
-                <h2>Resources</h2>
-                <table class="classic-table" id="classic-resource-table"></table>
+
+            <!-- TABLE LAYOUT SIMULATION -->
+            <table class="classic-layout-table">
+                <tr>
+                    <td class="classic-sidebar-cell">
+                        <b>Links:</b><br><br>
+                        <a href="#">Home</a><br>
+                        <a href="#">Webring</a><br>
+                        <a href="#">Email</a><br>
+                        <br>
+                        <b>Status:</b><br>
+                        Online
+                    </td>
+                    <td class="classic-main-cell">
+                        <div id="classic-info" class="classic-section">
+                            <h2>Information</h2>
+                            <p>Welcome to the Latent Space Club. Here you will find our <a href="#">Charter</a> and <a href="#">Rules</a>.</p>
+                        </div>
+                        
+                        <div id="classic-resources" class="classic-section">
+                            <h2>Resources</h2>
+                            <table class="classic-table" id="classic-resource-table"></table>
+                        </div>
+                        
+                        <div id="classic-forums" class="classic-section"><h2>Forums</h2><p>Under construction.</p></div>
+                        <div id="classic-events" class="classic-section"><h2>Events</h2><p>No events scheduled.</p></div>
+                        <div id="classic-club" class="classic-section"><h2>The Club</h2><p>You are here.</p></div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="classic-footer">
+                (c) 1999 Latent Space Club. Best viewed in Netscape Navigator 4.0.
             </div>
         </div>
     </div>
@@ -411,6 +484,21 @@
             return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"><rect width="100" height="100" fill="hsl(${hue}, 20%, 20%)"/><circle cx="50" cy="50" r="40" fill="none" stroke="hsl(${hue}, 70%, 60%)" stroke-width="2" opacity="0.5"/><path d="M0 100 L100 0" stroke="hsl(${hue}, 70%, 60%)" stroke-width="1" opacity="0.3"/></svg>`;
         }
 
+        // Expanded Content Data with HTML strings
+        const contentDB = {
+            "Charter": { title: "Community Charter", body: "<h1>Core Values</h1><p>We believe that AI is a tool for human expression, not a replacement for human spirit.</p><h2>Transparency</h2><p>We share workflows, prompts, and seeds openly. Gatekeeping is discouraged.</p><h2>Respect</h2><p>We critique the output, not the creator. Harassment is not tolerated.</p>" },
+            "Rules": { title: "Code of Conduct", body: "<h1>Official Rules</h1><ol><li>No Hate Speech</li><li>Credit Artists</li><li>Label NSFW content appropriately</li></ol>" },
+            "FAQ": { title: "Frequently Asked Questions", body: "<h1>FAQ</h1><p><strong>Q: How do I join?</strong><br>A: Just start creating and sharing.</p>" },
+            "Contact": { title: "Contact Admin", body: "<h1>Reach Out</h1><p>Email: admin@latentspace.club</p>" },
+            "Midjourney Docs": { title: "Midjourney Documentation", body: "<h1>MJ Docs</h1><p>Comprehensive guide to parameter tuning.</p>" },
+            "Stable Diffusion": { title: "Stable Diffusion Guide", body: "<h1>SD Local Install</h1><p>How to run A1111 locally.</p>" },
+            "Forums": { title: "Forums", body: "<h1>Discussion Board</h1><p>This is where the forum threads would live.</p>" },
+            "Events": { title: "Events Calendar", body: "<h1>Upcoming Events</h1><p>Hackathon 2026 dates TBD.</p>" },
+            "Arts": { title: "Art Gallery", body: "<h1>Member Showcase</h1><p>Gallery view goes here.</p>" },
+            "Dark Arts": { title: "Dark Arts", body: "<h1>Restricted Section</h1><p>Experimental content. Proceed with caution.</p>" },
+            "Club": { title: "The Club", body: "<h1>Welcome Home</h1><p>The central hub for all members.</p>" }
+        };
+
         const groupedResources = {
             "Generative Art": [
                 { title: "Midjourney Docs", desc: "Parameter guide", link: "#" },
@@ -437,6 +525,24 @@
         const themesList = ['cozy', 'futuristic', 'city', 'candy', 'nightmare', 'forest-light', 'forest-dark', 'icy-cave', 'icy-moon', 'desert-planet', 'desert-island', 'digital-realm'];
         const classicThemes = ['classic-netscape', 'classic-aol', 'classic-angelfire'];
         let cycleIndex = 0; let lastScrollTime = 0; let isLensActive = false;
+
+        // --- READER VIEW LOGIC ---
+        function openReader(key) {
+            const data = contentDB[key] || { title: key, body: "<p>Content placeholder.</p>" };
+            const reader = document.getElementById('reader-view');
+            const body = document.getElementById('reader-body');
+            
+            body.innerHTML = data.body; // Inject content
+            
+            // Add title if not in body
+            if(!data.body.includes('<h1>')) body.innerHTML = `<h1>${data.title}</h1>` + body.innerHTML;
+
+            reader.classList.add('active');
+        }
+
+        function closeReader() {
+            document.getElementById('reader-view').classList.remove('active');
+        }
 
         // --- CALIBRATION TOOL ---
         function toggleCalibrationMode() {
@@ -472,7 +578,6 @@
                 pos4 = e.clientY;
                 elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
                 elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                // IMPORTANT: Remove transform during drag to see raw top/left
                 elmnt.style.transform = "none"; 
             }
 
@@ -536,34 +641,26 @@
             });
 
             let html = '';
-            if (category === 'Club') {
-                html += createRedditPost('Welcome to the LSC', 'This is the central hub for the Latent Space Club.', 'r/club', 'admin');
-            } else if (category === 'Resources') {
-                Object.entries(groupedResources).forEach(([group, items]) => {
+            // USE contentDB for text content in Web2
+            if (contentDB[category]) {
+                html += createRedditPost(contentDB[category].title, "Click to read full content...", `r/${category}`, 'admin', category);
+            }
+            
+            if (category === 'Resources') {
+                 Object.entries(groupedResources).forEach(([group, items]) => {
                     items.forEach(item => {
-                        html += createRedditPost(item.title, item.desc, `r/${group.replace(/\s/g,'')}`, 'admin');
+                        html += createRedditPost(item.title, item.desc, `r/${group.replace(/\s/g,'')}`, 'admin', item.title);
                     });
                 });
-            } else if (category === 'Information') {
-                html += createRedditPost('Community Charter', 'We believe in Transparency, Respect, and Innovation...', 'r/announcements', 'admin');
-                html += createRedditPost('Official Rules', '1. No hate speech. 2. Credit artists...', 'r/rules', 'mod_team');
-                html += createRedditPost('FAQ', 'Q: How do I join? A: Just start creating...', 'r/help', 'automod');
-            } else if (category === 'Forums') {
-                html += createRedditPost('Weekly Discussion Thread', 'What are you working on this week?', 'r/general', 'automod');
-                html += createRedditPost('Is Prompt Engineering dead?', 'Discussion about the future of prompting...', 'r/discussion', 'user123');
-            } else if (category === 'Events') {
-                html += createRedditPost('Hackathon 2026', 'Join us for the annual latent space hackathon...', 'r/events', 'admin');
-            } else if (category === 'Arts') {
-                html += createRedditPost('My latest generation using Flux', '[Image Content Placeholder]', 'r/showcase', 'artist_x');
-            } else if (category === 'Dark Arts') {
-                html += createRedditPost('NSFW/Experimental Content Warning', 'This section contains unrestricted output...', 'r/darkarts', 'system');
-            }
+            } 
+            
             feed.innerHTML = html;
         }
 
-        function createRedditPost(title, body, subreddit, author) {
+        function createRedditPost(title, body, subreddit, author, contentKey) {
+            // Add onClick to open Reader View even from Web 2
             return `
-            <div class="reddit-post">
+            <div class="reddit-post" onclick="openReader('${contentKey || title}')">
                 <div class="reddit-votes">⬆ <span>${Math.floor(Math.random()*500)}</span> ⬇</div>
                 <div class="reddit-content">
                     <div class="reddit-meta">Posted in <strong>${subreddit}</strong> by u/${author} • 4h ago</div>
@@ -585,10 +682,10 @@
             const zuiInfoGrid = document.getElementById('zui-info-grid');
             if(zuiInfoGrid) {
                  zuiInfoGrid.innerHTML = `
-                    <div class="house-node"><div class="card-img" style="background:#334155; display:flex; align-items:center; justify-content:center; font-size:3rem;">📜</div><h4>Charter</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
-                    <div class="house-node"><div class="card-img" style="background:#475569; display:flex; align-items:center; justify-content:center; font-size:3rem;">⚖️</div><h4>Rules</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
-                    <div class="house-node"><div class="card-img" style="background:#334155; display:flex; align-items:center; justify-content:center; font-size:3rem;">❓</div><h4>FAQ</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
-                    <div class="house-node"><div class="card-img" style="background:#475569; display:flex; align-items:center; justify-content:center; font-size:3rem;">📬</div><h4>Contact</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node" onclick="openReader('Charter')"><div class="card-img" style="background:#334155; display:flex; align-items:center; justify-content:center; font-size:3rem;">📜</div><h4>Charter</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node" onclick="openReader('Rules')"><div class="card-img" style="background:#475569; display:flex; align-items:center; justify-content:center; font-size:3rem;">⚖️</div><h4>Rules</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node" onclick="openReader('FAQ')"><div class="card-img" style="background:#334155; display:flex; align-items:center; justify-content:center; font-size:3rem;">❓</div><h4>FAQ</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
+                    <div class="house-node" onclick="openReader('Contact')"><div class="card-img" style="background:#475569; display:flex; align-items:center; justify-content:center; font-size:3rem;">📬</div><h4>Contact</h4><div class="room-detail">LEVEL 4<br>Docs</div></div>
                  `;
             }
 
@@ -603,13 +700,13 @@
 
                 items.forEach(item => {
                     itemGrid.innerHTML += `
-                        <div class="house-node">
+                        <div class="house-node" onclick="openReader('${item.title}')">
                             <div class="card-img"><img src='${generateAbstractSVG(item.title)}' style="width:100%; height:100%; object-fit:cover;"></div>
                             <h4>${item.title}</h4>
                             <div class="room-detail">LEVEL 4: ROOM<br>${item.desc}</div>
                         </div>`;
                     
-                    if(classicTable) classicTable.innerHTML += `<tr><td>Icon</td><td><b>${item.title}</b><br>${item.desc}</td><td><a href="#">[LINK]</a></td></tr>`;
+                    if(classicTable) classicTable.innerHTML += `<tr><td>Icon</td><td><a href="#" onclick="openReader('${item.title}')"><b>${item.title}</b></a><br>${item.desc}</td><td>[LINK]</td></tr>`;
                 });
                 
                 catBlock.appendChild(itemGrid);
